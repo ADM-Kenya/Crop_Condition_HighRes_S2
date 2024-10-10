@@ -1,2 +1,14 @@
-# Crop_Condition_HighRes_S2
-High Resolution of Crop Condition Mapping Using Sentinel-2 and Machine Learning in openEO
+## Sentinel 2 based crop condition mapping
+
+Monthly Vegetation indexes from Sentinel-2 images are used as input to classify regions affected by drought.
+
+- CCM_Local_CDSE.ipynb : Crop Condition Mapping via CDSE/openEO cloud platform
+ 
+![CCM_Workflow](CCM_Workflow.PNG)
+
+In detail, the procedure is as follows:
+-	Vegetation indexes time series: The monthly mosaics of Sentinel-2 images were first produced for the period of 2017-2022. Based on the yield data and additional information regarding drought occurrence, the years 2018 and 2021 were selected for training as examples of non-drought and drought conditions, respectively. The images were processed to exclude images with high cloud coverage and tag cloud contaminated pixels. Afterwards, Four indices, namely Normalized Difference Vegetation Index (NDVI), Normalized Difference Moisture Index (NDMI), Normalized Difference Red Edge (NDRE), and Green Normalized Difference Vegetation Index (GNDVI), were computed for each monthly composite.
+-	Growing season’s stratification: The Kenyan agricultural systems are classified into two short and long rainy growing seasons. To clearly investigate the start, maximum and end of the two growing seasons, we utilized the WaPOR Phenology (Seasonal) product. The method is based on a time series of dekadal NDVI composites. Hence, the timing of each growing season for training years were derived for cropland pixels, masked by WaPOR land cover classification maps. The stratification correctness was also confirmed by local partners to reliably and accurately identify the two growing seasons.  
+-	Labeling pixels: Following the stratification and identification of two seasons, the time series were filtered by identifying local temporal anomalies based on consecutive VI observations. This step is needed for filtering the time series used for training by identifying the time series that have abnormally low values during the growing season, which can indicate the drought signal. Finally, two classes of drought affected and unaffected were separated for each season considering the drought years and the stratification.
+-	Classification and performance assessment: In this step, a 2D matrix of labeled time series is generated using the data of the previous step, which is the input of the machine learning classifier. The input data is separated to train and test portions by the ratio of 0.3. The random forest is trained by 70% of labeled time series to provide a classifier for predicting the most accurate class label. Finally, the performance of the trained model is assessed by the confusion matrix and overall accuracy over the test data.
+The trained model was used to predict the crop condition in the years that were not used for training.
